@@ -1,30 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart | Inventory</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Shopping Cart</title>
+    <style>
+        body { background-color: #f8f9fa; }
+        .card { border: none; border-radius: 12px; }
+        .table thead { background-color: #f1f3f5; }
+    </style>
 </head>
-<body class="bg-light">
-    <div class="container py-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Store</a></li>
-                <li class="breadcrumb-item active">Cart</li>
-            </ol>
-        </nav>
+<body>
 
-        <div class="row mt-4">
+    <div class="container py-5">
+        <div class="d-flex align-items-center mb-4">
+            <a href="/" class="btn btn-outline-secondary btn-sm me-3">&larr; Back to Shop</a>
+            <h1 class="h3 mb-0 fw-bold">Review Your Cart</h1>
+        </div>
+
+        <div class="row g-4">
             <div class="col-lg-8">
-                <div class="card shadow-sm p-4 border-0">
-                    <h3 class="mb-4">Shopping Cart</h3>
+                <div class="card shadow-sm p-4">
                     {% if cart_items %}
                     <div class="table-responsive">
                         <table class="table align-middle">
-                            <thead class="text-muted small text-uppercase">
+                            <thead class="small text-uppercase text-muted">
                                 <tr>
-                                    <th>Product</th>
-                                    <th>Quantity</th>
-                                    <th>Subtotal</th>
+                                    <th style="width: 50%;">Item Description</th>
+                                    <th class="text-center">Qty</th>
+                                    <th class="text-end">Subtotal</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -32,16 +37,20 @@
                                 {% for item in cart_items %}
                                 <tr>
                                     <td>
-                                        <div class="fw-bold">{{ item.product.name }}</div>
-                                        <div class="text-muted small">${{ item.product.price }} each</div>
+                                        <div class="fw-bold text-dark">{{ item.product.name }}</div>
+                                        <div class="small text-muted">${{ item.product.price|floatformat:2 }} per unit</div>
                                     </td>
-                                    <td>{{ item.quantity }}</td>
-                                    <td class="fw-bold">${{ item.total_item_price }}</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-light text-dark border px-3 py-2">{{ item.quantity }}</span>
+                                    </td>
+                                    <td class="text-end fw-bold">
+                                        ${{ item.total_item_price|floatformat:2 }}
+                                    </td>
                                     <td class="text-end">
-                                        <form action="{% url 'cart_delete' %}" method="POST">
+                                        <form action="{% url 'cart_delete' %}" method="POST" class="d-inline">
                                             {% csrf_token %}
                                             <input type="hidden" name="product_id" value="{{ item.product.id }}">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                            <button type="submit" class="btn btn-link text-danger p-0 small">Remove</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -50,28 +59,35 @@
                         </table>
                     </div>
                     {% else %}
-                    <p class="py-5 text-center text-muted">Your cart is currently empty.</p>
+                    <div class="text-center py-5">
+                        <p class="text-muted mb-4">Your inventory is currently empty.</p>
+                        <a href="/" class="btn btn-primary">Start Shopping</a>
+                    </div>
                     {% endif %}
                 </div>
             </div>
 
             <div class="col-lg-4">
-                <div class="card shadow-sm border-0 p-4 bg-white">
-                    <h5 class="mb-3">Order Summary</h5>
+                <div class="card shadow-sm p-4 border-top border-primary border-5">
+                    <h5 class="fw-bold mb-4">Checkout Summary</h5>
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Items:</span>
-                        <span>${{ cart.get_total_price }}</span>
+                        <span class="text-muted">Subtotal:</span>
+                        <span>${{ cart.get_total_price|floatformat:2 }}</span>
                     </div>
-                    <div class="d-flex justify-content-between mb-4 border-top pt-2">
-                        <span class="fw-bold fs-5">Total:</span>
-                        <span class="fw-bold fs-5">${{ cart.get_total_price }}</span>
+                    <div class="d-flex justify-content-between mb-4 border-top pt-3">
+                        <span class="fw-bold h5">Total:</span>
+                        <span class="fw-bold h5 text-primary">${{ cart.get_total_price|floatformat:2 }}</span>
                     </div>
                     <a href="{% url 'order_create' %}" class="btn btn-success btn-lg w-100 {% if not cart_items %}disabled{% endif %}">
                         Proceed to Checkout
                     </a>
+                    <div class="mt-3 text-center">
+                        <small class="text-muted">Prices include all applicable hardware taxes.</small>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 </body>
 </html>
