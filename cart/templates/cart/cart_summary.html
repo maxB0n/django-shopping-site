@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Shopping Cart</title>
+</head>
+<body>
+    <h1>Shopping Cart</h1>
+    
+    <div class="cart-container">
+        {% if cart_items %}
+            
+            {% for item in cart_items %}
+                <div class="cart-item">
+                    <h3>{{ item.product.name }}</h3>
+                    <p>Price: ${{ item.product.price }}</p>
+                    
+                    <p>Quantity: {{ item.quantity }}</p>
+                    <p><strong>Subtotal: ${{ item.total_item_price }}</strong></p>
+                    
+                    <form action="{% url 'cart_delete' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                        <button type="submit" style="color: red; cursor: pointer;">Remove Item</button>
+                    </form>
+                    <hr>
+                </div>
+            {% endfor %}
+            
+            <h2>Total: ${{ cart.get_total_price }}</h2>
+        <div style="margin-top: 20px;">
+            <a href="{% url 'order_create' %}" 
+                style="background-color: green; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                Proceed to Checkout
+            </a>
+        </div>
+        {% else %}
+            <p>Your cart is currently empty.</p>
+        {% endif %}
+        
+        <br>
+        <a href="/" style="text-decoration: none; color: blue;">&larr; Go back to the store</a>
+    </div>
+</body>
+</html>

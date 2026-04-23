@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Checkout | My Shop</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .order-summary { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .error-box { color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        form p { margin-bottom: 15px; }
+        input[type="text"], input[type="email"], textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .btn-order { background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .btn-order:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+
+    <h1>Finalize Your Order</h1>
+
+    {% if form.errors %}
+        <div class="error-box">
+            <strong>The order couldn't be processed. Please check the fields below:</strong>
+            {{ form.errors }}
+        </div>
+    {% endif %}
+
+    <div class="order-summary">
+        <h3>Your Items:</h3>
+        <ul>
+            {% for item in cart %}
+                <li>
+                    <strong>{{ item.quantity }}x</strong> {{ item.product.name }} — 
+                    <span>${{ item.total_item_price }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <hr>
+        <h3>Grand Total: ${{ cart.get_total_price }}</h3>
+    </div>
+
+    <div class="shipping-form">
+        <h3>Shipping Details</h3>
+        <form action="." method="POST">
+            {% csrf_token %}
+            
+            {{ form.as_p }}
+
+            <button type="submit" class="btn-order">Place Order</button>
+        </form>
+    </div>
+
+    <p style="margin-top: 30px;">
+        <a href="{% url 'cart_summary' %}">&larr; Back to Cart</a>
+    </p>
+
+</body>
+</html>

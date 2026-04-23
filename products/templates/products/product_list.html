@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Shop</title>
+    <style>
+        /* A basic grid layout so products sit side-by-side */
+        .product-grid { 
+            display: flex; 
+            gap: 20px; 
+            flex-wrap: wrap; 
+        }
+        .product { 
+            border: 1px solid #ccc; 
+            padding: 15px; 
+            width: 250px; 
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div style="text-align: right; padding: 10px;">
+        <a href="{% url 'cart_summary' %}" style="font-size: 18px; text-decoration: none;">🛒 Check Cart</a>
+    </div>
+
+    <h1>Welcome to the Store!</h1>
+    
+    <div class="product-grid">
+        {% for product in products %}
+            <div class="product">
+                
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 100%; height: auto; border-radius: 4px;">
+                {% endif %}
+                
+                <h2>{{ product.name }}</h2>
+                <p>{{ product.description }}</p>
+                <p><strong>Price:</strong> ${{ product.price }}</p>
+                
+                <form action="{% url 'cart_add' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    
+                    <label for="quantity">Qty:</label>
+                    <input type="number" name="quantity" value="1" min="1" max="99" style="width: 50px;">
+                    
+                    <button type="submit" style="margin-top: 10px; cursor: pointer;">Add to Cart</button>
+                </form>
+            </div>
+            
+        {% empty %}
+            <p>No products available right now. Go to the admin panel to add some!</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

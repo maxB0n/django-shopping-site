@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'products',
+    'cart',
+    'users',
+    'orders',
 ]
 
 MIDDLEWARE = [
@@ -61,6 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'cart.context_processors.cart',
             ],
         },
     },
@@ -115,3 +120,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# The URL the browser will use to access the image
+MEDIA_URL = '/media/'
+# The actual folder on your computer where the files will be saved
+MEDIA_ROOT = BASE_DIR / 'media'
