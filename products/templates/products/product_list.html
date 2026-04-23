@@ -1,55 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Shop</title>
-    <style>
-        /* A basic grid layout so products sit side-by-side */
-        .product-grid { 
-            display: flex; 
-            gap: 20px; 
-            flex-wrap: wrap; 
-        }
-        .product { 
-            border: 1px solid #ccc; 
-            padding: 15px; 
-            width: 250px; 
-            border-radius: 8px;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hardware Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <div style="text-align: right; padding: 10px;">
-        <a href="{% url 'cart_summary' %}" style="font-size: 18px; text-decoration: none;">🛒 Check Cart</a>
-    </div>
+<body class="bg-light">
 
-    <h1>Welcome to the Store!</h1>
-    
-    <div class="product-grid">
-        {% for product in products %}
-            <div class="product">
-                
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 100%; height: auto; border-radius: 4px;">
-                {% endif %}
-                
-                <h2>{{ product.name }}</h2>
-                <p>{{ product.description }}</p>
-                <p><strong>Price:</strong> ${{ product.price }}</p>
-                
-                <form action="{% url 'cart_add' %}" method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="product_id" value="{{ product.id }}">
-                    
-                    <label for="quantity">Qty:</label>
-                    <input type="number" name="quantity" value="1" min="1" max="99" style="width: 50px;">
-                    
-                    <button type="submit" style="margin-top: 10px; cursor: pointer;">Add to Cart</button>
-                </form>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">EQUIPMENT SHOP</a>
+            <div class="ms-auto">
+                <a href="{% url 'cart_summary' %}" class="btn btn-outline-light position-relative">
+                    🛒 Cart
+                    {% if cart %}<span class="badge bg-danger rounded-pill">{{ cart|length }}</span>{% endif %}
+                </a>
             </div>
-            
-        {% empty %}
-            <p>No products available right now. Go to the admin panel to add some!</p>
-        {% endfor %}
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 class="mb-4 fw-light">Available Components</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for product in products %}
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top p-3" alt="{{ product.name }}" style="height: 200px; object-fit: contain;">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-bold">{{ product.name }}</h5>
+                        <p class="card-text text-muted small">{{ product.description }}</p>
+                        <div class="mt-auto">
+                            <h4 class="text-primary mb-3">${{ product.price }}</h4>
+                            <form action="{% url 'cart_add' %}" method="POST" class="row g-2">
+                                {% csrf_token %}
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                <div class="col-4">
+                                    <input type="number" name="quantity" value="1" min="1" class="form-control">
+                                </div>
+                                <div class="col-8">
+                                    <button type="submit" class="btn btn-dark w-100">Add to Cart</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </body>
 </html>
